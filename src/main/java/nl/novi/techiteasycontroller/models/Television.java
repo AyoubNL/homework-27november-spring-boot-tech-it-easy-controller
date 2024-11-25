@@ -12,38 +12,48 @@ public class Television {
     public String brand;
     public String name;
     public Double price;
+    @Column(name = "available_size")
     public Double availableSize;
+    @Column(name = "refresh_rate")
     public Integer refreshRate;
+    @Column(name = "screen_type")
     public String screenType;
+    @Column(name = "screen_quality")
     public String screenQuality;
+    @Column(name = "smart_tv")
     public Boolean smartTv;
     public Boolean wifi;
+    @Column(name = "voice_control")
     public Boolean voiceControl;
     public Boolean hdr;
     public Boolean bluetooth;
+    @Column(name = "ambi_light")
     public Boolean ambiLight;
+    @Column(name = "original_stock")
     public Integer originalStock;
     public Integer sold;
-    {
-        this.id =id;
-        this.type =type;
-        this.brand =brand;
-        this.name =name;
-        this.price =price;
-        this.availableSize =availableSize;
-        this.refreshRate =refreshRate;
-        this.screenType =screenType;
-        this.screenQuality =screenQuality;
-        this.smartTv =smartTv;
-        this.wifi =wifi;
-        this.voiceControl =voiceControl;
-        this.hdr =hdr;
-        this.bluetooth =bluetooth;
-        this.ambiLight =ambiLight;
-        this.originalStock =originalStock;
-        this.sold =sold;
-}
+
     public Television() {}
+
+    public Television(Long id, String type, String brand, String name, Double price, Double availableSize, Integer refreshRate, String screenType, String screenQuality, Boolean smartTv, Boolean wifi, Boolean voiceControl, Boolean hdr, Boolean bluetooth, Boolean ambiLight, Integer originalStock, Integer sold) {
+        this.id = id;
+        this.type = type;
+        this.brand = brand;
+        this.name = name;
+        this.price = price;
+        this.availableSize = availableSize;
+        this.refreshRate = refreshRate;
+        this.screenType = screenType;
+        this.screenQuality = screenQuality;
+        this.smartTv = smartTv;
+        this.wifi = wifi;
+        this.voiceControl = voiceControl;
+        this.hdr = hdr;
+        this.bluetooth = bluetooth;
+        this.ambiLight = ambiLight;
+        this.originalStock = originalStock;
+        this.sold = sold;
+    }
 
     public Long getId() {
         return id;
@@ -180,4 +190,5 @@ public class Television {
     public void setSold(Integer sold) {
         this.sold = sold;
     }
+
 }
