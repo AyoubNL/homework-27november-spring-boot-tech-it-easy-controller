@@ -2,19 +2,22 @@ package nl.novi.techiteasycontroller.controllers;
 
 import nl.novi.techiteasycontroller.models.Television;
 import nl.novi.techiteasycontroller.repositories.TelevisionRepository;
+import nl.novi.techiteasycontroller.service.TelevisionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 public class TelevisionsController {
 
     private final TelevisionRepository televisionRepository;
+    private final TelevisionService televisionService;
 
-    public TelevisionsController(TelevisionRepository televisionRepository) {
+    public TelevisionsController(TelevisionRepository televisionRepository, TelevisionService televisionService) {
         this.televisionRepository = televisionRepository;
+        this.televisionService = televisionService;
     }
 
     @GetMapping("/televisions")
