@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+@RequestMapping("/televisions")
 @RestController
 public class TelevisionsController {
 
@@ -17,24 +17,24 @@ public class TelevisionsController {
         this.televisionRepository = televisionRepository;
     }
 
-    @GetMapping("/televisions")
+    @GetMapping
     public ResponseEntity<List<Television>> getTelevisions() {
         return ResponseEntity.ok(this.televisionRepository.findAll());
     }
 
-    @GetMapping("/televisions/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Television> getTelevisionsById(@PathVariable Long id) {
 
         return ResponseEntity.ok(this.televisionRepository.findById(id).orElse(null));
     }
 
-    @PostMapping("/televisions")
+    @PostMapping
     public ResponseEntity<Television> createTelevision(@RequestBody Television television) {
         televisionRepository.save(television);
         return ResponseEntity.created(null).body(television);
     }
 
-    @PutMapping("/televisions/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Television> updateTelevision(@RequestBody Television updateTelevision, @PathVariable Long id) {
         Television television = new Television();
 
@@ -60,7 +60,7 @@ public class TelevisionsController {
             return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/televisions/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTelevision(@PathVariable Long id) {
         televisionRepository.deleteById(id);
         return ResponseEntity.noContent().build();
