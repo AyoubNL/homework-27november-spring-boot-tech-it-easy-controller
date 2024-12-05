@@ -1,5 +1,6 @@
 package nl.novi.techiteasycontroller.controllers;
 
+import jakarta.validation.Valid;
 import nl.novi.techiteasycontroller.dtos.TelevisionInputDto;
 import nl.novi.techiteasycontroller.dtos.TelevisionOutputDto;
 import nl.novi.techiteasycontroller.models.Television;
@@ -17,11 +18,10 @@ import java.util.List;
 @RestController
 public class TelevisionsController {
 
-    private final TelevisionRepository televisionRepository;
+
     private final TelevisionService televisionService;
 
     public TelevisionsController(TelevisionRepository televisionRepository, TelevisionService televisionService) {
-        this.televisionRepository = televisionRepository;
         this.televisionService = televisionService;
     }
 
@@ -54,7 +54,7 @@ public class TelevisionsController {
 //    }
 
     @PostMapping("/televisions")
-    public ResponseEntity <TelevisionOutputDto> createTelevision(@RequestBody TelevisionInputDto televisionInputDto) {
+    public ResponseEntity <TelevisionOutputDto> createTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto) {
 
         TelevisionOutputDto televisionOutputDto = this.televisionService.createTelevision(televisionInputDto);
 
@@ -93,7 +93,7 @@ public class TelevisionsController {
 //    }
 
     @PutMapping("/televisions/{id}")
-    public ResponseEntity<TelevisionInputDto> updateTelevision(@RequestBody TelevisionInputDto televisionInputDto, @PathVariable Long id) {
+    public ResponseEntity<TelevisionInputDto> updateTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto, @PathVariable Long id) {
 
         this.televisionService.updateTelevision(id, televisionInputDto);
 

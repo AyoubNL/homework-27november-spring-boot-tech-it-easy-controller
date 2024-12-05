@@ -1,15 +1,14 @@
 package nl.novi.techiteasycontroller.dtos;
 
-
 import jakarta.validation.constraints.*;
 
 public class TelevisionInputDto {
 
-    @NotNull
+    @NotBlank(message = "Please provide a type")
     public String type;
-    @NotNull
+    @NotBlank(message = "Please provide a brand")
     public String brand;
-    @Size(min = 2, max = 59)
+    @Size(min = 2, max = 59, message = "name must be at least 2 characters long")
     public String name;
     @Positive
     @Max(value = 10000)
