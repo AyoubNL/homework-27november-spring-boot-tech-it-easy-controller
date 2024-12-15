@@ -2,21 +2,39 @@ package nl.novi.techiteasycontroller.service;
 
 import nl.novi.techiteasycontroller.dtos.TelevisionInputDto;
 import nl.novi.techiteasycontroller.dtos.TelevisionOutputDto;
+import nl.novi.techiteasycontroller.exceptions.RecordNotFoundException;
 import nl.novi.techiteasycontroller.models.Television;
+import nl.novi.techiteasycontroller.models.WallBracket;
+import nl.novi.techiteasycontroller.repositories.CiModuleRepository;
+import nl.novi.techiteasycontroller.repositories.RemoteControllerRepository;
 import nl.novi.techiteasycontroller.repositories.TelevisionRepository;
+import nl.novi.techiteasycontroller.repositories.WallBracketRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TelevisionService {
 
     final private TelevisionRepository televisionRepository;
+    final private CiModuleRepository ciModuleRepository;
+    final private CiModuleService ciModuleService;
+    final private WallBracketRepository wallBracketRepository;
+    final private WallbracketService wallbracketService;
+    final private RemoteControllerRepository remoteControllerRepository;
+    final private RemoteControllerService remoteControllerService;
 
-    public TelevisionService(TelevisionRepository televisionRepository) {
+    public TelevisionService(TelevisionRepository televisionRepository, CiModuleRepository ciModuleRepository, WallBracketRepository wallBracketRepository, CiModuleService ciModuleService, WallbracketService wallbracketService, RemoteControllerRepository remoteControllerRepository, RemoteControllerService remoteControllerService) {
         this.televisionRepository = televisionRepository;
+        this.ciModuleRepository = ciModuleRepository;
+        this.wallBracketRepository = wallBracketRepository;
+        this.ciModuleService = ciModuleService;
+        this.wallbracketService = wallbracketService;
+        this.remoteControllerRepository = remoteControllerRepository;
+        this.remoteControllerService = remoteControllerService;
     }
 
     public List<TelevisionOutputDto> getAllTelevisions() {
@@ -80,29 +98,94 @@ public class TelevisionService {
     }
 
     public TelevisionOutputDto createTelevision(TelevisionInputDto televisionInputDto) {
-        Television television = new Television();
 
-        television.setType(televisionInputDto.type);
-        television.setName(televisionInputDto.name);
-        television.setBrand(televisionInputDto.brand);
-        television.setPrice(televisionInputDto.price);
-        television.setAvailableSize(televisionInputDto.availableSize);
-        television.setRefreshRate(televisionInputDto.refreshRate);
-        television.setScreenType(televisionInputDto.screenType);
-        television.setScreenQuality(televisionInputDto.screenQuality);
-        television.setSmartTv(televisionInputDto.smartTv);
-        television.setWifi(televisionInputDto.wifi);
-        television.setVoiceControl(televisionInputDto.voiceControl);
-        television.setHdr(televisionInputDto.hdr);
-        television.setBluetooth(televisionInputDto.bluetooth);
-        television.setAmbiLight(televisionInputDto.ambiLight);
-        television.setOriginalStock(televisionInputDto.originalStock);
-        television.setSold(televisionInputDto.sold);
+        Television tv = transferToTelevision(televisionInputDto);
+        this.televisionRepository.save(tv);
 
+        return transferToDto(tv);
 
-        this.televisionRepository.save(television);
+    }
 
+    public void deleteTelevision(Long id) {
+
+        this.televisionRepository.deleteById(id);
+    }
+
+    public TelevisionOutputDto updateTelevision(Long id, TelevisionInputDto televisionInputDto) {
+        Optional <Television> televisionOptional = this.televisionRepository.findById(id);
+
+        if(televisionOptional.isPresent()) {
+            Television television = televisionOptional.get();
+
+            television.setType(televisionInputDto.type);
+            television.setName(televisionInputDto.name);
+            television.setBrand(televisionInputDto.brand);
+            television.setPrice(televisionInputDto.price);
+            television.setAvailableSize(televisionInputDto.availableSize);
+            television.setRefreshRate(televisionInputDto.refreshRate);
+            television.setScreenType(televisionInputDto.screenType);
+            television.setScreenQuality(televisionInputDto.screenQuality);
+            television.setSmartTv(televisionInputDto.smartTv);
+            television.setWifi(televisionInputDto.wifi);
+            television.setVoiceControl(televisionInputDto.voiceControl);
+            television.setHdr(televisionInputDto.hdr);
+            television.setBluetooth(televisionInputDto.bluetooth);
+            television.setAmbiLight(televisionInputDto.ambiLight);
+            television.setOriginalStock(televisionInputDto.originalStock);
+            television.setSold(televisionInputDto.sold);
+
+            Television returnTelevision = this.televisionRepository.save(television);
+
+            return transferToDto(returnTelevision);
+        }
+
+        else{
+
+            throw new RecordNotFoundException();
+        }
+
+    }
+
+    public List<TelevisionOutputDto> getAllTelevisionsByBrand(String brand) {
+        List<Television> tvList = televisionRepository.findAllTelevisionsByBrandEqualsIgnoreCase(brand);
+        List <TelevisionOutputDto> televisionOutputDtoList = new ArrayList<>();
+
+        for (Television television : tvList) {
+            TelevisionOutputDto televisionOutputDto = transferToDto(television);
+            televisionOutputDtoList.add(televisionOutputDto);
+        }
+
+        return televisionOutputDtoList;
+
+    }
+
+    public Television transferToTelevision(TelevisionInputDto televisionInputDto) {
+        var television = new Television();
+
+        television.setType(televisionInputDto.getType());
+        television.setBrand(televisionInputDto.getBrand());
+        television.setName(televisionInputDto.getName());
+        television.setPrice(televisionInputDto.getPrice());
+        television.setAvailableSize(televisionInputDto.getAvailableSize());
+        television.setRefreshRate(televisionInputDto.getRefreshRate());
+        television.setScreenType(televisionInputDto.getScreenType());
+        television.setScreenQuality(televisionInputDto.getScreenQuality());
+        television.setSmartTv(televisionInputDto.getSmartTv());
+        television.setWifi(televisionInputDto.getWifi());
+        television.setVoiceControl(televisionInputDto.getVoiceControl());
+        television.setHdr(televisionInputDto.getHdr());
+        television.setBluetooth(televisionInputDto.getBluetooth());
+        television.setAmbiLight(televisionInputDto.getAmbiLight());
+        television.setOriginalStock(televisionInputDto.getOriginalStock());
+        television.setSold(televisionInputDto.getSold());
+
+        return television;
+
+    }
+
+    public TelevisionOutputDto transferToDto(Television television) {
         TelevisionOutputDto televisionOutputDto = new TelevisionOutputDto();
+
         televisionOutputDto.id = television.getId();
         televisionOutputDto.type = television.getType();
         televisionOutputDto.name = television.getName();
@@ -124,36 +207,52 @@ public class TelevisionService {
         return televisionOutputDto;
     }
 
-    public Television deleteTelevision(Long id) {
-        Television television = this.televisionRepository.findById(id).orElse(null);
-        this.televisionRepository.delete(television);
+    public void assignRemoteControllerToTelevision(Long id, Long remoteId) {
+    var optionalTelevision = this.televisionRepository.findById(id);
+    var optionalRemoteController = this.remoteControllerRepository.findById(remoteId);
 
-        return television;
-    }
+    if(optionalTelevision.isPresent() && optionalRemoteController.isPresent()){
+        var television = optionalTelevision.get();
+        var remoteController = optionalRemoteController.get();
 
-    public void updateTelevision(Long id, TelevisionInputDto televisionInputDto) {
-        Television television = this.televisionRepository.findById(id).orElse(null);
-
-        television.setType(televisionInputDto.type);
-        television.setName(televisionInputDto.name);
-        television.setBrand(televisionInputDto.brand);
-        television.setPrice(televisionInputDto.price);
-        television.setAvailableSize(televisionInputDto.availableSize);
-        television.setRefreshRate(televisionInputDto.refreshRate);
-        television.setScreenType(televisionInputDto.screenType);
-        television.setScreenQuality(televisionInputDto.screenQuality);
-        television.setSmartTv(televisionInputDto.smartTv);
-        television.setWifi(televisionInputDto.wifi);
-        television.setVoiceControl(televisionInputDto.voiceControl);
-        television.setHdr(televisionInputDto.hdr);
-        television.setBluetooth(televisionInputDto.bluetooth);
-        television.setAmbiLight(televisionInputDto.ambiLight);
-        television.setOriginalStock(televisionInputDto.originalStock);
-        television.setSold(televisionInputDto.sold);
-
+        television.setRemoteController(remoteController);
         this.televisionRepository.save(television);
-
     }
+    else{
+        throw new RecordNotFoundException();
+    }
+    }
+
+    public void assignCIModuleToTelevision(Long id, Long ciModuleId){
+        var optionalTelevision = this.televisionRepository.findById(id);
+        var optionalRemoteController = this.remoteControllerRepository.findById(ciModuleId);
+
+        if(optionalTelevision.isPresent() && optionalRemoteController.isPresent()){
+            var television = optionalTelevision.get();
+            var remoteController = optionalRemoteController.get();
+
+            television.setRemoteController(remoteController);
+            this.televisionRepository.save(television);
+        }
+        else{
+            throw new RecordNotFoundException();
+        }
+    }
+
+    public void assignWallBracketToTelevision(Long id, WallBracket wallBracket){
+        var OptionalTelevision = this.televisionRepository.findById(id);
+
+        if(OptionalTelevision.isPresent()){
+            var television = OptionalTelevision.get();
+
+            television.getWallBrackets().add(wallBracket);
+
+            this.televisionRepository.save(television);
+
+        }
+    }
+
+
 
 
 }

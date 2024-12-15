@@ -1,17 +1,24 @@
 package nl.novi.techiteasycontroller.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
-@Table(name = "ci-modules")
+@Table(name = "cimodule")
 public class CiModule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
-    String type;
-    Double price;
+    private Long id;
+    private String name;
+    private String type;
+    private Double price;
+
+    @OneToMany (mappedBy = "ciModule")
+    @JsonIgnore
+    private List <Television> televisions;
 
     public CiModule() {}
 
@@ -24,6 +31,10 @@ public class CiModule {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

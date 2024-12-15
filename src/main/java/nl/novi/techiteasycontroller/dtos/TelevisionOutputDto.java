@@ -1,7 +1,5 @@
 package nl.novi.techiteasycontroller.dtos;
 
-import jakarta.persistence.Column;
-
 public class TelevisionOutputDto {
 
     public Long id;

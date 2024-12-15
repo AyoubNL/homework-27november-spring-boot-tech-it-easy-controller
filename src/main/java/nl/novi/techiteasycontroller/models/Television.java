@@ -2,40 +2,82 @@ package nl.novi.techiteasycontroller.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "televisions")
+@Table(name = "television")
 public class Television {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-    public String type;
-    public String brand;
-    public String name;
-    public Double price;
+    Long id;
+    private String type;
+    private String brand;
+    private String name;
+    private Double price;
     @Column(name = "available_size")
-    public Double availableSize;
+    private Double availableSize;
     @Column(name = "refresh_rate")
-    public Integer refreshRate;
+    private Integer refreshRate;
     @Column(name = "screen_type")
-    public String screenType;
+    private String screenType;
     @Column(name = "screen_quality")
-    public String screenQuality;
+    private String screenQuality;
     @Column(name = "smart_tv")
-    public Boolean smartTv;
-    public Boolean wifi;
+    private Boolean smartTv;
+    private Boolean wifi;
     @Column(name = "voice_control")
-    public Boolean voiceControl;
-    public Boolean hdr;
-    public Boolean bluetooth;
+    private Boolean voiceControl;
+    private Boolean hdr;
+    private Boolean bluetooth;
     @Column(name = "ambi_light")
-    public Boolean ambiLight;
+    private Boolean ambiLight;
     @Column(name = "original_stock")
-    public Integer originalStock;
-    public Integer sold;
+    private Integer originalStock;
+    private Integer sold;
 
-    public Television() {}
 
-    public Television(Long id, String type, String brand, String name, Double price, Double availableSize, Integer refreshRate, String screenType, String screenQuality, Boolean smartTv, Boolean wifi, Boolean voiceControl, Boolean hdr, Boolean bluetooth, Boolean ambiLight, Integer originalStock, Integer sold) {
+    @OneToOne
+    private RemoteController remoteController = new RemoteController();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ci_module_id")
+    private CiModule ciModule = new CiModule();
+
+    @ManyToMany
+    @JoinTable(name = "television_wallbrackets",
+            joinColumns = @JoinColumn(name = "television"),
+            inverseJoinColumns = @JoinColumn(name = "wallbracket"))
+    List<WallBracket> wallBrackets = new ArrayList<>();
+
+    public RemoteController getRemoteController() {
+        return remoteController;
+    }
+
+    public void setRemoteController(RemoteController remoteController) {
+        this.remoteController = remoteController;
+    }
+
+    public CiModule getCiModule() {
+        return ciModule;
+    }
+
+    public void setCiModule(CiModule ciModule) {
+        this.ciModule = ciModule;
+    }
+
+    public List<WallBracket> getWallBrackets() {
+        return wallBrackets;
+    }
+
+    public void setWallBrackets(List<WallBracket> wallBrackets) {
+        this.wallBrackets = wallBrackets;
+    }
+
+    public Television() {
+    }
+
+    public Television(Long id, String type, String brand, String name, Double price, Double availableSize, Integer refreshRate, String screenType, String screenQuality, Boolean smartTv, Boolean wifi, Boolean voiceControl, Boolean hdr, Boolean bluetooth, Boolean ambiLight, Integer originalStock, Integer sold, RemoteController remoteController) {
         this.id = id;
         this.type = type;
         this.brand = brand;
@@ -53,6 +95,7 @@ public class Television {
         this.ambiLight = ambiLight;
         this.originalStock = originalStock;
         this.sold = sold;
+        this.remoteController = remoteController;
     }
 
     public Long getId() {

@@ -3,17 +3,16 @@ package nl.novi.techiteasycontroller.controllers;
 import jakarta.validation.Valid;
 import nl.novi.techiteasycontroller.dtos.TelevisionInputDto;
 import nl.novi.techiteasycontroller.dtos.TelevisionOutputDto;
-import nl.novi.techiteasycontroller.models.Television;
+import nl.novi.techiteasycontroller.models.WallBracket;
 import nl.novi.techiteasycontroller.repositories.TelevisionRepository;
 import nl.novi.techiteasycontroller.service.TelevisionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriBuilder;
 
 import java.net.URI;
 import java.util.List;
-
+import java.util.Optional;
 
 @RestController
 public class TelevisionsController {
@@ -25,33 +24,31 @@ public class TelevisionsController {
         this.televisionService = televisionService;
     }
 
-//    @GetMapping("/televisions")
-//    public ResponseEntity TelevisionOutputDto getTelevisions() {
-//        return this.televisionService.getAllTelevisions();
-//    }
-
     @GetMapping("/televisions")
-    public ResponseEntity <List<TelevisionOutputDto>> getAllTelevisions() {
-        return ResponseEntity.ok(this.televisionService.getAllTelevisions());
-    }
+    public ResponseEntity <List<TelevisionOutputDto>> getAllTelevisions(@RequestParam(value = "brand", required = false) Optional<String> brand) {
 
-//    @GetMapping("/televisions/{id}")
-//    public ResponseEntity<Television> getTelevisionsById(@PathVariable Long id) {
-//
-//        return ResponseEntity.ok(this.televisionRepository.findById(id).orElse(null));
-//    }
+        List<TelevisionOutputDto> dtos;
+
+        if (brand.isEmpty()){
+            dtos = televisionService.getAllTelevisions();
+        }
+
+        else {
+            dtos = televisionService.getAllTelevisionsByBrand(brand.get());
+        }
+
+        return ResponseEntity.ok().body(dtos);
+
+//        return ResponseEntity.ok(this.televisionService.getAllTelevisions());
+    }
 
     @GetMapping("/televisions/{id}")
     public ResponseEntity <TelevisionOutputDto> getTelevisionsById(@PathVariable Long id) {
 
-        return ResponseEntity.ok(this.televisionService.getTelevisionById(id));
-    }
+        TelevisionOutputDto television = this.televisionService.getTelevisionById(id);
 
-//    @PostMapping("/televisions")
-//    public ResponseEntity<Television> createTelevision(@RequestBody Television television) {
-//        televisionRepository.save(television);
-//        return ResponseEntity.created(null).body(television);
-//    }
+        return ResponseEntity.ok(television);
+    }
 
     @PostMapping("/televisions")
     public ResponseEntity <TelevisionOutputDto> createTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto) {
@@ -66,51 +63,38 @@ public class TelevisionsController {
     }
 
 
-//    @PutMapping("/televisions/{id}")
-//    public ResponseEntity<Television> updateTelevision(@RequestBody Television updateTelevision, @PathVariable Long id) {
-//        Television television = new Television();
-//
-//        television.setId(id);
-//        television.setType(updateTelevision.getType());
-//        television.setName(updateTelevision.getName());
-//        television.setRefreshRate(updateTelevision.getRefreshRate());
-//        television.setAmbiLight(updateTelevision.getAmbiLight());
-//        television.setBluetooth(updateTelevision.getBluetooth());
-//        television.setHdr(updateTelevision.getHdr());
-//        television.setOriginalStock(updateTelevision.getOriginalStock());
-//        television.setPrice(updateTelevision.getPrice());
-//        television.setAvailableSize(updateTelevision.getAvailableSize());
-//        television.setBrand(updateTelevision.getBrand());
-//        television.setScreenQuality(updateTelevision.getScreenQuality());
-//        television.setScreenType(updateTelevision.getScreenType());
-//        television.setSold(updateTelevision.getSold());
-//        television.setWifi(updateTelevision.getWifi());
-//        television.setVoiceControl(updateTelevision.getVoiceControl());
-//        television.setSmartTv(updateTelevision.getSmartTv());
-//
-//    this.televisionRepository.save(television);
-//            return ResponseEntity.noContent().build();
-//    }
-
     @PutMapping("/televisions/{id}")
-    public ResponseEntity<TelevisionInputDto> updateTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto, @PathVariable Long id) {
+    public ResponseEntity<TelevisionOutputDto> updateTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto, @PathVariable Long id) {
 
-        this.televisionService.updateTelevision(id, televisionInputDto);
+        TelevisionOutputDto televisionOutputDto = this.televisionService.updateTelevision(id, televisionInputDto);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(televisionOutputDto);
     }
-
-//    @DeleteMapping("/televisions/{id}")
-//    public ResponseEntity<Object> deleteTelevision(@PathVariable Long id) {
-//        televisionRepository.deleteById(id);
-//        return ResponseEntity.noContent().build();
-//    }
 
 
     @DeleteMapping("/televisions/{id}")
     public ResponseEntity<Object> deleteTelevision(@PathVariable Long id) {
         this.televisionService.deleteTelevision(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/televisions/{id}/remotecontroller/{remoteId}")
+    public void assignRemoteControllerToTelevision(@PathVariable Long id, @PathVariable Long remoteId) {
+
+        this.televisionService.assignRemoteControllerToTelevision(id, remoteId);
+
+    }
+
+    @PutMapping("/televisions/{id}/wallbracket")
+    public void assignWallBracketToTelevision(@PathVariable Long id, @RequestBody WallBracket wallBracket) {
+        this.televisionService.assignWallBracketToTelevision(id, wallBracket);
+    }
+
+
+    @PutMapping("/televisions/{id}/cimodule/{ciModuleId}")
+    public void assignCIModuleToTelevision(@PathVariable Long id, @PathVariable Long ciModuleId) {
+        this.televisionService.assignCIModuleToTelevision(id, ciModuleId);
     }
 
 

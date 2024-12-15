@@ -3,18 +3,21 @@ package nl.novi.techiteasycontroller.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "remotecontrollers")
+@Table(name = "remote_controller")
 public class RemoteController {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String compatibleWith;
-    String batteryType;
-    String name;
-    String brand;
-    Double price;
-    Integer originalStock;
+    private Long id;
+    private String compatibleWith;
+    private String batteryType;
+    private String name;
+    private String brand;
+    private Double price;
+    private Integer originalStock;
+
+    @OneToOne (mappedBy = "remoteController")
+    private Television television;
 
     public RemoteController() {}
 
@@ -30,6 +33,10 @@ public class RemoteController {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCompatibleWith() {
@@ -78,5 +85,13 @@ public class RemoteController {
 
     public void setOriginalStock(Integer originalStock) {
         this.originalStock = originalStock;
+    }
+
+    public Television getTelevision() {
+        return television;
+    }
+
+    public void setTelevision(Television television) {
+        this.television = television;
     }
 }
