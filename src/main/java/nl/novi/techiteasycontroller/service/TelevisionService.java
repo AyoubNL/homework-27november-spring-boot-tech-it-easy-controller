@@ -225,13 +225,13 @@ public class TelevisionService {
 
     public void assignCIModuleToTelevision(Long id, Long ciModuleId){
         var optionalTelevision = this.televisionRepository.findById(id);
-        var optionalRemoteController = this.remoteControllerRepository.findById(ciModuleId);
+        var optionalCiModule = this.ciModuleRepository.findById(ciModuleId);
 
-        if(optionalTelevision.isPresent() && optionalRemoteController.isPresent()){
+        if(optionalTelevision.isPresent() && optionalCiModule.isPresent()){
             var television = optionalTelevision.get();
-            var remoteController = optionalRemoteController.get();
+            var ciModule = optionalCiModule.get();
 
-            television.setRemoteController(remoteController);
+            television.setCiModule(ciModule);
             this.televisionRepository.save(television);
         }
         else{
@@ -249,6 +249,9 @@ public class TelevisionService {
 
             this.televisionRepository.save(television);
 
+        }
+        else{
+            throw new RecordNotFoundException();
         }
     }
 
