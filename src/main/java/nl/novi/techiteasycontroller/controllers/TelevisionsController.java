@@ -20,7 +20,7 @@ public class TelevisionsController {
 
     private final TelevisionService televisionService;
 
-    public TelevisionsController(TelevisionRepository televisionRepository, TelevisionService televisionService) {
+    public TelevisionsController(TelevisionService televisionService) {
         this.televisionService = televisionService;
     }
 
