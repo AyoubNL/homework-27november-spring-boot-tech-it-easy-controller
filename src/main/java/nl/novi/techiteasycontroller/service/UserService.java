@@ -93,9 +93,9 @@ public class UserService {
         if(!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
 
-        Authority remoteAuthority = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
+        Authority removeAuthority = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
 
-        user.deleteAuthority(remoteAuthority);
+        user.deleteAuthority(removeAuthority);
 
         userRepository.save(user);
     }
