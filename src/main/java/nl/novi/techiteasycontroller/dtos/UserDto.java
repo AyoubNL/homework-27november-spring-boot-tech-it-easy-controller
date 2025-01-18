@@ -9,7 +9,6 @@ public class UserDto {
 
     public String username;
     public String password;
-    public String apikey;
     public Set<Authority> authorities;
 
     public String getUsername() {
@@ -36,11 +35,5 @@ public class UserDto {
         this.authorities = authorities;
     }
 
-    public String getApikey() {
-        return apikey;
-    }
 
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
-    }
 }

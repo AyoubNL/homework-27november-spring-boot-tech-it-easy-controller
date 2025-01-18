@@ -4,7 +4,6 @@ import nl.novi.techiteasycontroller.payload.AuthenticationRequest;
 import nl.novi.techiteasycontroller.payload.AuthenticationResponse;
 import nl.novi.techiteasycontroller.service.CustomUserDetailService;
 import nl.novi.techiteasycontroller.utils.JwtUtil;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

@@ -6,8 +6,8 @@ import nl.novi.techiteasycontroller.exceptions.RecordNotFoundException;
 import nl.novi.techiteasycontroller.models.Authority;
 import nl.novi.techiteasycontroller.models.User;
 import nl.novi.techiteasycontroller.repositories.UserRepository;
-import nl.novi.techiteasycontroller.utils.RandomStringGenerator;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,9 +16,11 @@ import java.util.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserDto> getAllUsers() {
@@ -49,8 +51,8 @@ public class UserService {
     }
 
     public String createUser(UserDto userDto) {
-        String randomString = RandomStringGenerator.generateRandomString(20);
-        userDto.setApikey(randomString);
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User newUser = userRepository.save(toUser(userDto));
         return newUser.getUsername();
     }
@@ -105,7 +107,6 @@ public class UserService {
 
         userDto.setUsername(user.getUsername());
         userDto.setPassword(user.getPassword());
-        userDto.setApikey(user.getApiKey());
         userDto.setAuthorities(user.getAuthorities());
 
         return userDto;
@@ -116,7 +117,6 @@ public class UserService {
 
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
-        user.setApiKey(userDto.getApikey());
 
         return user;
     }
