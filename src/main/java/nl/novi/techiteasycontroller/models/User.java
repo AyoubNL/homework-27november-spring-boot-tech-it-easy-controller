@@ -18,8 +18,6 @@ public class User {
 
     private String role;
 
-    private String apiKey;
-
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
@@ -58,13 +56,6 @@ public class User {
         return authorities;
     }
 
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);

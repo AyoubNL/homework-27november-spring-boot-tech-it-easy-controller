@@ -12,7 +12,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Service
@@ -40,6 +39,7 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token){
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJwt(token).getBody();
+
     }
 
     private Boolean isTokenExpired(String token) {
@@ -55,14 +55,14 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
 
-        long validPeriod = 1000 * 60;
+        long validPeriod = 1000 * 60 * 60;
         long currentTime = System.currentTimeMillis();
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(currentTime))
-                .setExpiration(new Date(currentTime - validPeriod))
+                .setExpiration(new Date(currentTime + validPeriod))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
 
